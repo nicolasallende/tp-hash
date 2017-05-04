@@ -50,6 +50,7 @@ hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
 	tu_hash->tabla = (campo_hash_t*)malloc(sizeof(campo_hash_t)*(tu_hash->tamanio));
 	if(!(tu_hash->tabla) return NULL;
 	inicialiar_tabla(tu_hash->tabla, tu_hash->tamanio);
+	return tu_hash;
 }
 
 
