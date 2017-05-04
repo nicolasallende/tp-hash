@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int const MAX = 70;
+#define MAX 70;
+#define REDIM_SUP 2;
+
 
 typedef enum {BORRADO,VACIO,OCUPADO} estado_t;
 
@@ -21,10 +23,9 @@ struct hash{
 	hash_destruir_dato_t destructor;
 }hash_t;
 
-//seguramente esta incompleto esto le debe faltar algo
+
 struct hash_iter{
 	hash_t hash;
-	campo_hash_t iter_tabla;
 	size_t indice;
 }hash_iter_t;
 
@@ -43,12 +44,12 @@ void inicialiar_tabla(campo_hash_t *tabla, size_t tam){
 } 
 
 hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
-	hash_t tu_hash;
+	hash_t* tu_hash = malloc(sizeof(hash_t));
 	tu_hash->tamanio = 31;
 	tu_hash->cantidad = 0;
 	tu_hash->destructor = destruir_dato;
 	tu_hash->tabla = (campo_hash_t*)malloc(sizeof(campo_hash_t)*(tu_hash->tamanio));
-	if(!(tu_hash->tabla) return NULL;
+	if(!(tu_hash->tabla)) return NULL;
 	inicialiar_tabla(tu_hash->tabla, tu_hash->tamanio);
 	return tu_hash;
 }
@@ -67,7 +68,7 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 		return true;
 	}
 	if(((hash->cantidad / hash->tamanio)*100) >= MAX){
-		//aca es lo de redimensionar 
+		redimensionar_tabla(hash, hash->tamanio * REDIM_SUP);
 	}
 	size_t h = func_hash(clave);
 	while(h > hash->tamanio){
@@ -81,7 +82,7 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 	}
 	if(hash->tabla[h]->estado == BORRADO){
 		if(hash->destructor != NULL){			
-			hash->destructor(hash->tabla[h]->dato);	 //esto se va a repetir hay que hacer una funcion  sobreescribir que se use con los borrados y otros
+			hash->destructor(hash->tabla[h]->dato);	 
 		}
 	}
 	hash->tabla[h]->clave = clave;
