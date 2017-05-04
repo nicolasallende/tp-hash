@@ -45,6 +45,7 @@ void inicialiar_tabla(campo_hash_t *tabla, size_t tam){
 
 hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
 	hash_t* tu_hash = malloc(sizeof(hash_t));
+	if(!(tu_hash)) return NULL;
 	tu_hash->tamanio = 31;
 	tu_hash->cantidad = 0;
 	tu_hash->destructor = destruir_dato;
@@ -68,7 +69,7 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 		return true;
 	}
 	if(((hash->cantidad / hash->tamanio)*100) >= MAX){
-		redimensionar_tabla(hash, hash->tamanio * REDIM_SUP);
+		if(!(redimensionar_tabla(hash, hash->tamanio * REDIM_SUP))) return NULL;
 	}
 	size_t h = func_hash(clave);
 	while(h > hash->tamanio){
