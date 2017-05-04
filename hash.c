@@ -71,13 +71,11 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 	if(((hash->cantidad / hash->tamanio)*100) >= MAX){
 		if(!(redimensionar_tabla(hash, hash->tamanio * REDIM_SUP))) return NULL;
 	}
-	size_t h = func_hash(clave);
-	while(h > hash->tamanio){
-		h = h / (hash->tamanio);
-	}
-	while((hash->tabla[h]->estado != VACIO) && (hash->tabla[h]->estado != BORRADO)){
+	unsigned long  h = func_hash(clave);
+	h = pos_en_tabla(hash, h);
+	while((hash->tabla[h]->estado == OCUPADO){
 		h++;
-		if(h = hash->tamanio){
+		if(h == hash->tamanio){
 			h = 0;
 		}
 	}
@@ -95,11 +93,10 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){
 			
 void *hash_obtener(const hash_t *hash, const char *clave){
 	if(!hash_pertenece(hash,clave)) return NULL;
-	int i = 0;
-	while(hash->tabla[i]->clave != clave){
-		i++;
-	}
-	return hash->tabla[i]->dato;
+	unsigned long  pos = func_hash(clave);
+	pos = pos_en_tabla(hash, h);
+	buscando_pos_en_tabla(hash,&pos,clave); 
+	return hash->tabla[pos]->dato;
 }
 
 bool hash_iter_avanzar(hash_iter_t *iter){
