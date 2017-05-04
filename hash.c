@@ -1,4 +1,4 @@
-//#include "hash.h"
+#include "hash.h"
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -21,6 +21,12 @@ struct hash{
 	hash_destruir_dato_t destructor;
 }hash_t;
 
+//seguramente esta incompleto esto le debe faltar algo
+struct hash_iter{
+	hash_t hash;
+	campo_hash_t iter_tabla;
+	size_t indice;
+}hash_iter_t;
 
 unsigned long func_hash(unsigned char *str){
 	unsigned long h = 5381;
@@ -92,3 +98,14 @@ void *hash_obtener(const hash_t *hash, const char *clave){
 	}
 	return hash->tabla[i]->dato;
 }
+
+bool hash_iter_avanzar(hash_iter_t *iter){
+	if(hash_iter_al_final(iter)) return false;
+	iter->indice++;
+}
+
+bool hash_iter_al_final(const hash_iter_t *iter){
+	if (iter->indice == iter->hash->tamanio) return true;
+	return false;
+}
+
